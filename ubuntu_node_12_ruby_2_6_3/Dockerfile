@@ -7,9 +7,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
 
-RUN curl -sS https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-
 # Install dependencies
 RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
@@ -17,19 +14,10 @@ RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrad
     nodejs \
     zip \
     unzip \
-    google-chrome-stable \
     yarn=1.19.1-1  && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     truncate -s 0 /var/log/*log
-
-RUN CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
-    mkdir -p /opt/chromedriver-$CHROMEDRIVER_VERSION && \
-    curl -sS -o /tmp/chromedriver_linux64.zip http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
-    unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver-$CHROMEDRIVER_VERSION && \
-    rm /tmp/chromedriver_linux64.zip && \
-    chmod +x /opt/chromedriver-$CHROMEDRIVER_VERSION/chromedriver && \
-    ln -fs /opt/chromedriver-$CHROMEDRIVER_VERSION/chromedriver /usr/local/bin/chromedriver
 
 # Configure bundler and PATH
 ENV LANG=C.UTF-8 \
